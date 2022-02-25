@@ -8,27 +8,38 @@ public class GameManager : MonoBehaviour
 {
     public int score;
     public static GameManager inst;
-    bool gameHasEnded = false;
 
     public Text scoreText;
+    public GameObject QuaMan;
+
+    public bool endGame;
+
+    private void Start()
+    {
+        QuaMan.SetActive(false);
+        endGame = false;
+    }
 
     public void IncrementScore()
     {
+        if(score >= 100)
+        {
+            WinGame();
+            endGame = true;
+        }    
         score++;
         scoreText.text = "SCORE: " + score;
-        Restart();
-    }    
+        /*return score;*/
+    }
+
+    public void WinGame()
+    {
+        QuaMan.SetActive(true);
+        return;
+    }   
 
     private void Awake()
     {
         inst = this;
-    }
-
-    void Restart()
-    {
-        if(score == 5)
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
     }
 }

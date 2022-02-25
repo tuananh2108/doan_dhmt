@@ -8,14 +8,11 @@ public class LevelBoundary : MonoBehaviour
     public static float rightSide = 539.0f;
     public float internalLeft;
     public float internalRight;
-    public static float jumpLimit = 10.0f;
-    public float internalTop;
 
     // Update is called once per frame
     void Update()
     {
         internalLeft = leftSide;
         internalRight = rightSide;
-        internalTop = jumpLimit;
     }
 }

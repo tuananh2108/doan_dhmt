@@ -1,86 +1,81 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-[RequireComponent(typeof(Rigidbody))]
 public class PlayerMove : MonoBehaviour
 {
-    //This is a reference to the Rigidbody component called "rb"
-    public Rigidbody rb; //
-    public float forwardForce = 2000f;
-    public float sidewaysForce = 500f;
+    private CharacterController characterController;
+    private Vector3 moveVector;
 
-    public float moveSpeed = 15;
-    public float leftRightSpeed = 20;
-    public float jumpSpeed = 50;
+    public float speedMove = 15f;
+    public float leftRightSpeed = 20f;
+    public float jumpPower = 30f;
 
+    private bool isDead = false;
+    public GameObject lostGame;
 
-    float horizontalInput; //
-    /*public float horizontalMultiplier = 2;*/
-
-    //We mark this as "Fixed"Update because we are using it to mess with physics
-    private void FixedUpdate()
+    public MonsterFollow monster;
+    private float curDistance = 5.0f;
+    private void Start()
     {
-        /*Vector3 fowardMove = transform.forward * moveSpeed * Time.fixedDeltaTime; //
-        Vector3 horizontalMove = transform.right * horizontalInput * leftRightSpeed * Time.fixedDeltaTime; //
-
-        rb.MovePosition(rb.position + fowardMove); //*/
-
-        //Add a forward force
-        /*rb.AddForce(0, 0, forwardForce * Time.deltaTime);*/
-        transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed, Space.World);
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-        {
-            if (rb.position.x > LevelBoundary.leftSide)
-            {
-                transform.Translate(Vector3.left * Time.deltaTime * leftRightSpeed);
-            }
-        }
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-        {
-            if (rb.position.x < LevelBoundary.rightSide)
-            {
-                transform.Translate(Vector3.right * Time.deltaTime * leftRightSpeed);
-            }
-        }
-
-        if (Input.GetKey(KeyCode.Space))
-        {
-            if (rb.position.y < LevelBoundary.jumpLimit)
-            {
-                transform.Translate(Vector3.up * Time.deltaTime * jumpSpeed);
-            }
-        }
-
+        characterController = GetComponent<CharacterController>();
+        moveVector = Vector3.zero;
+        lostGame.SetActive(false);
     }
 
     void Update()
     {
-        /*transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed, Space.World);*/
-        /*if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        monster.curDis = curDistance;
+        if (isDead)
         {
-            if (this.gameObject.transform.position.x > LevelBoundary.leftSide)
-            {
-                transform.Translate(Vector3.left * Time.deltaTime * leftRightSpeed);
-            }
-        }
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-        {
-            if (this.gameObject.transform.position.x < LevelBoundary.rightSide)
-            {
-                transform.Translate(Vector3.right * Time.deltaTime * leftRightSpeed);
-            }
+            curDistance = 1.0f;
+            monster.Follow(transform.position, speedMove);
+            return;
         }
 
-        if (Input.GetKey(KeyCode.Space))
-        {
-            if (this.gameObject.transform.position.y < LevelBoundary.jumpLimit)
-            {
-                transform.Translate(Vector3.up * Time.deltaTime * jumpSpeed);
-            }
-        }*/
+        // X - Trái và Phải
+        moveVector.x = Input.GetAxisRaw("Horizontal") * leftRightSpeed;
 
-        /*horizontalInput = Input.GetAxis("Horizontal"); //*/
+        // Y - Trên và dưới
+        if (characterController.isGrounded)
+        {
+            if (Input.GetKey(KeyCode.Space))
+            {
+                moveVector.y = jumpPower;
+            }
+        }
+        else
+        {
+            moveVector.y -= jumpPower * 3 * Time.deltaTime;
+        }
+
+        // Z - Trước và sau
+        moveVector.z = speedMove;
+
+        characterController.Move(moveVector * Time.deltaTime * Time.timeScale);
+        monster.Follow(characterController.transform.position, speedMove);
     }
+
+    //It is begin called every time our capsule hits something
+    /*private void OnControllerColliderHit(ControllerColliderHit hit)
+	{
+        if (hit.point.z > transform.position.z + characterController.radius)
+            Debug.Log("Dead");
+		    *//*Death();*//*
+	}*/
+
+    private void OnTriggerEnter(Collider other) //orther collider của đối tượng mà player va chạm
+    {
+        if (other.gameObject.CompareTag("Obstacle"))
+        {
+            Debug.Log("Dead");
+            Death();
+        }
+        else Debug.Log("No");
+    }
+    private void Death()
+	{
+        isDead = true;
+        lostGame.SetActive(true);
+	}
 }
