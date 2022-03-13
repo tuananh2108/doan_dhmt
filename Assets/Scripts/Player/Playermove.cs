@@ -1,26 +1,43 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
-[RequireComponent(typeof(Rigidbody))]
+
 public class Playermove : MonoBehaviour
 {
-    public float moveSpeed = 50;
-
+    public CharacterController controller;
+    public float moveSpeed = 100f;
     public float LeftRightSpeed = 200;
-    public float jumpSpeed = 10;
-    // Start is called before the first frame update
-    Rigidbody rb;
+    public float velocity;
+    public float gravity = 80f;
+    public float jump = 70.0f;
+
+    private bool isDead = false;
+  public GameObject startMenu;
+
     void Start()
     {
-       rb = GetComponent<Rigidbody>();
+        controller = GetComponent<CharacterController>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (controller.isGrounded)
+        {
+            velocity = -gravity * Time.deltaTime;
+            if(Input.GetKeyDown(KeyCode.Space)|| Input.GetKeyDown(KeyCode.W))
+            { velocity = jump; }
+        }
+        else { velocity -= gravity * Time.deltaTime; }
+        Vector3 moveVector = new Vector3(0, velocity, 0);
+        controller.Move(moveVector * Time.deltaTime);
+
+
+
         transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed, Space.World);
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
@@ -39,9 +56,23 @@ public class Playermove : MonoBehaviour
 
        if(Input.GetKey(KeyCode.Space))
         {
-            transform.Translate(Vector3.up * Time.deltaTime * jumpSpeed);
+            transform.Translate(Vector3.up * Time.deltaTime * jump);
         }
 
 
+    }
+    private void OnTriggerEnter(Collider other) //orther collider của đối tượng mà player va chạm
+    {
+        if (other.gameObject.CompareTag("dead"))
+        {
+            Debug.Log("Dead");
+            Death();
+        }
+        else Debug.Log("No");
+    }
+    private void Death()
+    {
+        isDead = true;
+        //SceneManager.LoadScene("lose");
     }
 }

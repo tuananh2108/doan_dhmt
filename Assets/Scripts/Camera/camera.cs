@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[RequireComponent(typeof(Rigidbody))]
+
 public class camera : MonoBehaviour
 {
-    public float moveSpeed = 50;
+    public float moveSpeed = 20;
 
   
     // Start is called before the first frame update

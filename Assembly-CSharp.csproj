@@ -47,6 +47,8 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\Player\Move.cs" />
+     <Compile Include="Assets\Scripts\UI\play.cs" />
      <Compile Include="Assets\Scripts\Environment\LevelBoundary.cs" />
      <Compile Include="Assets\Scripts\Collectables\rotateCoin.cs" />
      <Compile Include="Assets\Scripts\Environment\GenerateLevel.cs" />
@@ -54,7 +56,9 @@
      <Compile Include="Assets\Scripts\Collectables\collectCoin.cs" />
      <Compile Include="Assets\Scripts\Camera\camera.cs" />
      <Compile Include="Assets\Grass And Flowers Pack 1\Example Scene\SimpleTextureDrawing.cs" />
+     <Compile Include="Assets\Scripts\Collectables\goldscore.cs" />
      <Compile Include="Assets\Scripts\Player\MonsterMove.cs" />
+     <Compile Include="Assets\Scripts\Camera\cameramove.cs" />
      <None Include="Assets\FantasyEnvironments\Environments\README.txt" />
      <None Include="Assets\Five Seamless Tileable Ground Textures\read me.txt" />
      <None Include="Assets\Grass And Flowers Pack 1\Example Scene\Skyboxes\_skybox info.txt" />
